@@ -29,6 +29,8 @@ logic [REG_WIDTH-1:0] o_reg_0;
 logic [REG_WIDTH-1:0] o_reg_1;
 logic [REG_WIDTH-1:0] o_reg_2;
 logic [REG_WIDTH-1:0] o_reg_3;
+// logic           [3:0] o_reg_number;
+// logic                 o_new_data_pulse;
 
 int              CLK_PERIOD = 20;
 localparam [7:0] REJESTR    = 8'd2;
@@ -51,6 +53,8 @@ registers_control #(
   .i_tx_udp_payload_axis_tready (i_tx_udp_payload_axis_tready),
   .i_port_nbr                   (16'd1234),
   .i_ip_adr                     ({8'd192, 8'd168, 8'd1, 8'd128}),
+  // .o_reg_number                 (o_reg_number),
+  // .o_new_data_pulse             (o_new_data_pulse),
   .o_reg_0                      (o_reg_0),
   .o_reg_1                      (o_reg_1),
   .o_reg_2                      (o_reg_2),

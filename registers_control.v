@@ -9,22 +9,18 @@ module registers_control #(
   parameter [31:0] IP_ADRESS   = {8'd192, 8'd168, 8'd1, 8'd128}, // adres IP komputera
   parameter [15:0] PORT_NUMBER = 16'd1234                        // numer portu
 )(
-  input  wire i_clk,
-  input  wire i_rst,
-
-  input  wire [7:0] i_rx_udp_payload_axis_tdata,
-  input  wire       i_rx_udp_payload_axis_tvalid,
-  input  wire       i_rx_udp_payload_axis_tlast,
-  output  reg       o_rx_udp_payload_axis_tready,
-
-  output  reg [7:0] o_tx_udp_payload_axis_tdata,
-  output wire       o_tx_udp_payload_axis_tvalid,
-  output wire       o_tx_udp_payload_axis_tlast,
-  input  wire       i_tx_udp_payload_axis_tready,
-
-  input  wire [15:0] i_port_nbr,
-  input  wire [31:0] i_ip_adr,
-
+  input  wire                 i_clk,
+  input  wire                 i_rst,
+  input  wire           [7:0] i_rx_udp_payload_axis_tdata,
+  input  wire                 i_rx_udp_payload_axis_tvalid,
+  input  wire                 i_rx_udp_payload_axis_tlast,
+  output  reg                 o_rx_udp_payload_axis_tready,
+  output  reg           [7:0] o_tx_udp_payload_axis_tdata,
+  output wire                 o_tx_udp_payload_axis_tvalid,
+  output wire                 o_tx_udp_payload_axis_tlast,
+  input  wire                 i_tx_udp_payload_axis_tready,
+  input  wire          [15:0] i_port_nbr,
+  input  wire          [31:0] i_ip_adr,
   output wire [REG_WIDTH-1:0] o_reg_0,
   output wire [REG_WIDTH-1:0] o_reg_1,
   output wire [REG_WIDTH-1:0] o_reg_2,
@@ -33,11 +29,6 @@ module registers_control #(
 
 
 reg [REG_WIDTH-1:0] registers [0:REGS_NUM-1];
-
-assign o_reg_0 = registers[0];
-assign o_reg_1 = registers[1];
-assign o_reg_2 = registers[2];
-assign o_reg_3 = registers[3];
 
 localparam [2:0] S_WAIT_COLON    = 3'd0;
 localparam [2:0] S_PARSE_REG_NBR = 3'd1;
@@ -145,17 +136,16 @@ begin: REGISTERS_CONTROL_FSM
             end
           end else begin // czy wyslano wszystko?
             if (i_rx_udp_payload_axis_tlast) begin // czy otrzymano sygnal konca wiadomosci?
-              // registers[r_reg_number] <= r_write_data;
-              r_state                 <= S_WRITE_DONE;
+              r_state          <= S_WRITE_DONE;
             end
           end
         end
       end // S_WRITE_REG
 
       S_WRITE_DONE: begin
-          r_write_byte_cnt        <= 0;
-          registers[r_reg_number] <= r_write_data;
-          r_state                 <= S_WAIT_COLON;
+        r_write_byte_cnt        <= 0;
+        registers[r_reg_number] <= r_write_data;
+        r_state                 <= S_WAIT_COLON;
       end // S_WRITE_DONE
 
       S_READ_REG: begin
@@ -164,14 +154,14 @@ begin: REGISTERS_CONTROL_FSM
         if (i_tx_udp_payload_axis_tready) begin
           if (r_read_byte_cnt < (REG_WIDTH/8)-1) begin // czy nie wyslano wszystkiego?
             case (r_read_byte_cnt)
-              0: o_tx_udp_payload_axis_tdata <= r_read_data[31:24];
-              1: o_tx_udp_payload_axis_tdata <= r_read_data[23:16];
-              2: o_tx_udp_payload_axis_tdata <= r_read_data[15: 8];
-              3: o_tx_udp_payload_axis_tdata <= r_read_data[ 7: 0];
+              0:       o_tx_udp_payload_axis_tdata <= r_read_data[31:24];
+              1:       o_tx_udp_payload_axis_tdata <= r_read_data[23:16];
+              2:       o_tx_udp_payload_axis_tdata <= r_read_data[15: 8];
+              default: o_tx_udp_payload_axis_tdata <= r_read_data[ 7: 0];
             endcase // r_read_byte_cnt
             r_read_byte_cnt              <= r_read_byte_cnt + 1;
           end else begin // czy wyslano cala zawartosc?
-            o_tx_udp_payload_axis_tdata <= r_read_data[ 7: 0];
+            o_tx_udp_payload_axis_tdata  <= r_read_data[ 7: 0];
             r_read_byte_cnt              <= 0;
             r_state                      <= S_WAIT_COLON;
             r_tx_udp_payload_axis_tvalid <= 0;
@@ -197,6 +187,12 @@ end // REG_O_TX_TLAST
 
 assign o_tx_udp_payload_axis_tlast = r_tx_udp_payload_axis_tlast;
 assign o_tx_udp_payload_axis_tvalid = r_tx_udp_payload_axis_tvalid || r_tx_udp_payload_axis_tlast;
+
+
+assign o_reg_0 = registers[0];
+assign o_reg_1 = registers[1];
+assign o_reg_2 = registers[2];
+assign o_reg_3 = registers[3];
 
 
 endmodule // registers_control

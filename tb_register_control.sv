@@ -53,8 +53,6 @@ registers_control #(
   .i_tx_udp_payload_axis_tready (i_tx_udp_payload_axis_tready),
   .i_port_nbr                   (16'd1234),
   .i_ip_adr                     ({8'd192, 8'd168, 8'd1, 8'd128}),
-  // .o_reg_number                 (o_reg_number),
-  // .o_new_data_pulse             (o_new_data_pulse),
   .o_reg_0                      (o_reg_0),
   .o_reg_1                      (o_reg_1),
   .o_reg_2                      (o_reg_2),
@@ -63,15 +61,15 @@ registers_control #(
 
 initial begin
   i_rx_udp_payload_axis_tvalid = 0;
-// zapis do rejestru
-#100;
+// zapis do rejestru #0
+#200;
   // znak poczatku
   i_rx_udp_payload_axis_tdata  = ASCII_COLON;
   i_rx_udp_payload_axis_tvalid = 1;
   i_rx_udp_payload_axis_tlast  = 0;
   #CLK_PERIOD;
   // nr rejestru
-  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + REJESTR;
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 2;
   i_rx_udp_payload_axis_tvalid = 1;
   i_rx_udp_payload_axis_tlast  = 0;
   #CLK_PERIOD;
@@ -103,10 +101,177 @@ initial begin
   i_rx_udp_payload_axis_tvalid = 0;
   i_rx_udp_payload_axis_tlast  = 0;
   i_tx_udp_payload_axis_tready = 0;
-// koniec 1-wszej ramki
+// koniec ramki zapis do #0
 
-// czytanie zawartosci rejestru
-  #100;
+
+
+
+
+// zapis do rejestru #1
+#300;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 1;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  ///////////////////////////////////////
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  ////////////////////////////////////////
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'h55;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'hAA;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'h55;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  ///////////////////////////////////////
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  //////////////////////////////////////// 
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'hAA;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #1
+
+
+
+
+
+// zapis do rejestru #2
+#400;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 0;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'h12;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'h34;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'h56;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'h78;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #2
+// zapis do rejestru #3
+#500;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 3;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'hFE;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'hDC;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'hBA;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'h98;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #3
+
+// czytanie zawartosci rejestru #0
+  #300;
   // znak poczatku
   i_rx_udp_payload_axis_tdata  = ASCII_COLON;
   i_rx_udp_payload_axis_tvalid = 1;
@@ -114,7 +279,7 @@ initial begin
   i_tx_udp_payload_axis_tready = 1;
   #CLK_PERIOD;
   // nr rejestru
-  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + REJESTR;
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 0;
   i_rx_udp_payload_axis_tvalid = 1;
   i_rx_udp_payload_axis_tlast  = 0;
   i_tx_udp_payload_axis_tready = 1;
@@ -133,7 +298,389 @@ initial begin
   i_rx_udp_payload_axis_tlast  = 0;
   i_tx_udp_payload_axis_tready = 0;
   #CLK_PERIOD;
-// koniec czytania
+// koniec czytania #0
+
+
+
+
+
+
+// czytanie zawartosci rejestru #1
+  #50;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 1;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_R_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #1
+
+
+
+
+
+
+// czytanie zawartosci rejestru #2
+  #250;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 2;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #2
+// czytanie zawartosci rejestru #3
+  #300;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 3;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #3
+
+// zapis do rejestru #0
+#200;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 0;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'h22;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'h33;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'h44;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'h55;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #0
+// zapis do rejestru #1
+#300;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 1;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'h66;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'h77;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'h88;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'h99;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #1
+// zapis do rejestru #2
+#400;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 2;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'hAA;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'hBB;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'hCC;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'hDD;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #2
+// zapis do rejestru #3
+#500;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 3;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // komenda
+  i_rx_udp_payload_axis_tdata  = ASCII_W_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 1 dane
+  i_rx_udp_payload_axis_tdata  = 8'hEE;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 2 dane
+  i_rx_udp_payload_axis_tdata  = 8'hFF;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 3 dane
+  i_rx_udp_payload_axis_tdata  = 8'h00;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  #CLK_PERIOD;
+  // 4 dane
+  i_rx_udp_payload_axis_tdata  = 8'h11;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+// koniec ramki zapis do #3
+
+
+// czytanie zawartosci rejestru #0
+  #300;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 3;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #0
+// czytanie zawartosci rejestru #1
+  #50;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 2;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #1
+// czytanie zawartosci rejestru #2
+  #250;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 1;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_UPPER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #2
+// czytanie zawartosci rejestru #3
+  #300;
+  // znak poczatku
+  i_rx_udp_payload_axis_tdata  = ASCII_COLON;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_NBR_BASE + 0;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  // nr rejestru
+  i_rx_udp_payload_axis_tdata  = ASCII_R_LOWER;
+  i_rx_udp_payload_axis_tvalid = 1;
+  i_rx_udp_payload_axis_tlast  = 1;
+  i_tx_udp_payload_axis_tready = 1;
+  #CLK_PERIOD;
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 1;
+  #(CLK_PERIOD*5);
+  i_rx_udp_payload_axis_tvalid = 0;
+  i_rx_udp_payload_axis_tlast  = 0;
+  i_tx_udp_payload_axis_tready = 0;
+  #CLK_PERIOD;
+// koniec czytania #3
 
 // echo - nieznana komenda
   #100;

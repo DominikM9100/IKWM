@@ -165,7 +165,7 @@ begin: REGISTERS_CONTROL_FSM
             r_read_byte_cnt              <= 0;
             r_state                      <= S_WAIT_COLON;
             r_tx_udp_payload_axis_tvalid <= 0;
-            o_rx_udp_payload_axis_tready <= 1;
+            // o_rx_udp_payload_axis_tready <= 1;
           end
         end
       end // S_READ_REG

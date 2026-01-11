@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module tb_registers_control;
+module nowy_tb;
 
 parameter REGS_NUM  = 4;         // liczba rejestrow
 parameter REG_WIDTH = 32;        // szerokosc rejestrow (w bitach)
@@ -35,12 +35,12 @@ logic [REG_WIDTH-1:0] o_reg_3;
 int              CLK_PERIOD = 20;
 localparam [7:0] REJESTR    = 8'd2;
 
-registers_control #(
+nowy #(
   .REGS_NUM    (REGS_NUM),                       // liczba rejestrow
   .REG_WIDTH   (REG_WIDTH),                      // szerokosc rejestrow (w bitach)
   .IP_ADRESS   ({8'd192, 8'd168, 8'd1, 8'd128}), // adres IP komputera
   .PORT_NUMBER (16'd1234)                        // numer portu
-) uut (
+) uut_nowy (
   .i_clk                        (i_clk),
   .i_rst                        (i_rst),
   .i_rx_udp_payload_axis_tdata  (i_rx_udp_payload_axis_tdata),

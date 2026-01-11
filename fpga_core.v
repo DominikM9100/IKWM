@@ -218,14 +218,12 @@ wire tx_udp_payload_axis_tuser;
 // wire tx_fifo_udp_payload_axis_tuser;
 
 parameter [47:0] LOCAL_MAC   = 48'h02_00_00_00_00_00;
-parameter [31:0] LOCAL_IP    = {8'd192, 8'd168,   8'd1, 8'd128}; // IP plytki
-parameter [31:0] DEST_IP     = {8'd192, 8'd168,   8'd1, 8'd128}; // IP komputera
-parameter [31:0] GATEWAY_IP  = {8'd192, 8'd168,   8'd1,   8'd1};
-parameter [31:0] SUBNET_MASK = {8'd255, 8'd255, 8'd255,   8'd0};
+parameter [31:0] LOCAL_IP    = {8'd192, 8'd168, 8'd1, 8'd128}; // IP komputera
+parameter [31:0] GATEWAY_IP  = {8'd192, 8'd168, 8'd1, 8'd1};
+parameter [31:0] SUBNET_MASK = {8'd255, 8'd255, 8'd255, 8'd0};
 parameter [15:0] PORT_NBR    = 16'd1234;
 parameter        REGS_NUM    = 4;         // liczba rejestrow
 parameter        REG_WIDTH   = 32;        // szerokosc rejestrow (w bitach)
-parameter [15:0] TX_MSG_LEN  = 16'd4; // bajty??? / bity???
 
 // Configuration
 wire [47:0] local_mac   = LOCAL_MAC;
@@ -273,32 +271,19 @@ assign tx_ip_payload_axis_tuser = 0;
 //   end
 // end
 
-assign tx_udp_hdr_valid = rx_udp_hdr_valid;// && (rx_udp_dest_port == PORT_NBR);
-assign rx_udp_hdr_ready = tx_eth_hdr_ready;//(tx_eth_hdr_ready && (rx_udp_dest_port == PORT_NBR));// || (rx_udp_dest_port != PORT_NBR); // odbior tylko ma jednym porcie???
-// assign tx_udp_hdr_valid = rx_udp_hdr_valid && match_cond;
-// assign rx_udp_hdr_ready = (tx_eth_hdr_ready && match_cond) || no_match;
-assign tx_udp_ip_dscp = 0;
-assign tx_udp_ip_ecn = 0;
-assign tx_udp_ip_ttl = 64;
-assign tx_udp_ip_source_ip = LOCAL_IP;//local_ip;
-assign tx_udp_ip_dest_ip = DEST_IP;//rx_udp_ip_source_ip;
-assign tx_udp_source_port = PORT_NBR;//rx_udp_dest_port;
-assign tx_udp_dest_port = PORT_NBR;//rx_udp_source_port;
-assign tx_udp_length = rx_udp_length; // TX_MSG_LEN // podmienic????????????????
-assign tx_udp_checksum = 0;
-
-// assign tx_udp_payload_axis_tdata = tx_fifo_udp_payload_axis_tdata;
-// assign tx_udp_payload_axis_tvalid = tx_fifo_udp_payload_axis_tvalid;
-// assign tx_fifo_udp_payload_axis_tready = tx_udp_payload_axis_tready;
-// assign tx_udp_payload_axis_tlast = tx_fifo_udp_payload_axis_tlast;
-// assign tx_udp_payload_axis_tuser = tx_fifo_udp_payload_axis_tuser;
-
-// assign rx_fifo_udp_payload_axis_tdata = rx_udp_payload_axis_tdata;
-// assign rx_fifo_udp_payload_axis_tvalid = rx_udp_payload_axis_tvalid && match_cond_reg;
-// assign rx_udp_payload_axis_tready = (rx_fifo_udp_payload_axis_tready && match_cond_reg) || no_match_reg;
-// assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
-// assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
-
+// assign tx_udp_hdr_valid    = rx_udp_hdr_valid && match_cond;
+// assign rx_udp_hdr_ready    = (tx_eth_hdr_ready && match_cond) || no_match;
+assign tx_udp_hdr_valid    = rx_udp_hdr_valid;
+assign rx_udp_hdr_ready    = tx_eth_hdr_ready;
+assign tx_udp_ip_dscp      = 0;
+assign tx_udp_ip_ecn       = 0;
+assign tx_udp_ip_ttl       = 64;
+assign tx_udp_ip_source_ip = local_ip;
+assign tx_udp_ip_dest_ip   = rx_udp_ip_source_ip;
+assign tx_udp_source_port  = rx_udp_dest_port;
+assign tx_udp_dest_port    = rx_udp_source_port;
+assign tx_udp_length       = rx_udp_length;
+assign tx_udp_checksum     = 0;
 
 // Place first payload byte onto LEDs
 reg valid_last = 0;
@@ -318,7 +303,6 @@ always @(posedge clk) begin
   end
 end
 
-
 // place dest IP onto 7 segment displays
 // reg [31:0] dest_ip_reg = 0;
 // always @(posedge clk) begin
@@ -330,31 +314,48 @@ end
 //   end
 // end
 
-wire [15:0] reg_0;
-wire [15:0] reg_1;
-wire [15:0] reg_2;
-wire [15:0] reg_3;
+wire [REG_WIDTH-1:0] reg_0;
+wire [REG_WIDTH-1:0] reg_1;
+wire [REG_WIDTH-1:0] reg_2;
+wire [REG_WIDTH-1:0] reg_3;
 wire [31:0] hex_disp;
 
 
-registers_control #(
+// assign tx_udp_payload_axis_tdata = tx_fifo_udp_payload_axis_tdata;
+// assign tx_udp_payload_axis_tvalid = tx_fifo_udp_payload_axis_tvalid;
+// assign tx_fifo_udp_payload_axis_tready = tx_udp_payload_axis_tready;
+// assign tx_udp_payload_axis_tlast = tx_fifo_udp_payload_axis_tlast;
+// assign tx_udp_payload_axis_tuser = tx_fifo_udp_payload_axis_tuser;
+
+// assign rx_fifo_udp_payload_axis_tdata = rx_udp_payload_axis_tdata;
+// assign rx_fifo_udp_payload_axis_tvalid = rx_udp_payload_axis_tvalid && match_cond_reg;
+// assign rx_udp_payload_axis_tready = (rx_fifo_udp_payload_axis_tready && match_cond_reg) || no_match_reg;
+// assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
+// assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
+
+nowy #(
   .REGS_NUM    (REGS_NUM),  // liczba rejestrow
   .REG_WIDTH   (REG_WIDTH), // szerokosc rejestrow (w bitach)
-  .IP_ADRESS   (DEST_IP),   // adres IP komputera
+  .IP_ADRESS   (LOCAL_IP),  // adres IP komputera
   .PORT_NUMBER (PORT_NBR)   // numer portu
-) i_registers_control (
+) i_nowy (
   .i_clk                        (clk),
   .i_rst                        (sw[4]),
   .i_rx_udp_payload_axis_tdata  (rx_udp_payload_axis_tdata),
   .i_rx_udp_payload_axis_tvalid (rx_udp_payload_axis_tvalid),
   .i_rx_udp_payload_axis_tlast  (rx_udp_payload_axis_tlast),
   .o_rx_udp_payload_axis_tready (rx_udp_payload_axis_tready),
+//   .i_rx_udp_payload_axis_tdata  (rx_udp_payload_axis_tdata),
+//   .i_rx_udp_payload_axis_tvalid (rx_udp_payload_axis_tvalid && match_cond_reg),
+//   .i_rx_udp_payload_axis_tlast  (rx_udp_payload_axis_tlast),
+//   .o_rx_udp_payload_axis_tready ((rx_fifo_udp_payload_axis_tready && match_cond_reg) || no_match_reg),
+
   .o_tx_udp_payload_axis_tdata  (tx_udp_payload_axis_tdata),
   .o_tx_udp_payload_axis_tvalid (tx_udp_payload_axis_tvalid),
   .o_tx_udp_payload_axis_tlast  (tx_udp_payload_axis_tlast),
   .i_tx_udp_payload_axis_tready (tx_udp_payload_axis_tready),
-  .i_port_nbr                   (rx_udp_source_port),//(PORT_NBR),
-  .i_ip_adr                     (rx_udp_ip_source_ip),//(dest_ip_reg), // adres IP nadawcy
+  .i_port_nbr                   (rx_udp_dest_port),
+  .i_ip_adr                     (rx_udp_ip_source_ip),
 //   .o_reg_number                 (o_reg_number),
 //   .o_new_data_pulse             (o_new_data_pulse),
   .o_reg_0                      (reg_0),
@@ -369,7 +370,7 @@ display_control #(
   .i_clk         (clk),
   .i_rst         (sw[4]),
   .i_sw          (sw[3:0]),
-  .i_dest_ip_adr (dest_ip_reg),
+  .i_dest_ip_adr (rx_udp_ip_source_ip),
   .i_reg_0       (reg_0),
   .i_reg_1       (reg_1),
   .i_reg_2       (reg_2),

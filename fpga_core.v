@@ -218,11 +218,9 @@ wire tx_fifo_udp_payload_axis_tlast;
 wire tx_fifo_udp_payload_axis_tuser;
 
 // Configuration
-parameter [31:0] LOCAL_IP = {8'd192, 8'd168, 8'd1,   8'd128};
-
 wire [47:0] local_mac   = 48'h02_00_00_00_00_00;
-wire [31:0] local_ip    = LOCAL_IP;
-wire [31:0] gateway_ip  = {8'd192, 8'd168, 8'd1,   8'd1};
+wire [31:0] local_ip    = {8'd10, 8'd204, 8'd133,   8'd51};
+wire [31:0] gateway_ip  = {8'd10, 8'd204, 8'd133,   8'd254};
 wire [31:0] subnet_mask = {8'd255, 8'd255, 8'd255, 8'd0};
 
 // IP ports not used
@@ -243,7 +241,7 @@ assign tx_ip_payload_axis_tlast = 0;
 assign tx_ip_payload_axis_tuser = 0;
 
 // Loop back UDP
-wire match_cond = rx_udp_dest_port == 1234;
+wire match_cond = rx_udp_dest_port == PORT_NBR;
 wire no_match = !match_cond;
 
 reg match_cond_reg = 0;
@@ -267,8 +265,18 @@ always @(posedge clk) begin
     end
 end
 
+parameter [47:0] LOCAL_MAC   = 48'h02_00_00_00_00_00;
+parameter [31:0] LOCAL_IP    = {8'd10, 8'd204, 8'd133, 8'd51};
+parameter [31:0] GATEWAY_IP  = {8'd10, 8'd204, 8'd133, 8'd254};
+parameter [31:0] SUBNET_MASK = {8'd255, 8'd255, 8'd255, 8'd0};
+parameter [15:0] PORT_NBR    = 16'd1234;
+parameter        REGS_NUM    = 4;         // liczba rejestrow
+parameter        REG_WIDTH   = 32;        // szerokosc rejestrow (w bitach)
+
 assign tx_udp_hdr_valid = rx_udp_hdr_valid && match_cond;
 assign rx_udp_hdr_ready = (tx_eth_hdr_ready && match_cond) || no_match;
+// assign tx_udp_hdr_valid = rx_udp_hdr_valid;
+// assign rx_udp_hdr_ready = tx_eth_hdr_ready;
 assign tx_udp_ip_dscp = 0;
 assign tx_udp_ip_ecn = 0;
 assign tx_udp_ip_ttl = 64;
@@ -279,39 +287,41 @@ assign tx_udp_dest_port = rx_udp_source_port;
 assign tx_udp_length = rx_udp_length;
 assign tx_udp_checksum = 0;
 
-assign tx_udp_payload_axis_tdata = tx_fifo_udp_payload_axis_tdata;
-assign tx_udp_payload_axis_tvalid = tx_fifo_udp_payload_axis_tvalid;
-assign tx_fifo_udp_payload_axis_tready = tx_udp_payload_axis_tready;
-assign tx_udp_payload_axis_tlast = tx_fifo_udp_payload_axis_tlast;
-assign tx_udp_payload_axis_tuser = tx_fifo_udp_payload_axis_tuser;
+// assign tx_fifo_udp_payload_axis_tready = tx_udp_payload_axis_tready;
+// assign tx_udp_payload_axis_tuser = tx_fifo_udp_payload_axis_tuser;
+assign tx_udp_payload_axis_tuser = 0;
+// assign rx_fifo_udp_payload_axis_tdata = rx_udp_payload_axis_tdata;
+// assign rx_fifo_udp_payload_axis_tvalid = rx_udp_payload_axis_tvalid && match_cond_reg;
+// assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
+// assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
 
-assign rx_fifo_udp_payload_axis_tdata = rx_udp_payload_axis_tdata;
-assign rx_fifo_udp_payload_axis_tvalid = rx_udp_payload_axis_tvalid && match_cond_reg;
-assign rx_udp_payload_axis_tready = (rx_fifo_udp_payload_axis_tready && match_cond_reg) || no_match_reg;
-assign rx_fifo_udp_payload_axis_tlast = rx_udp_payload_axis_tlast;
-assign rx_fifo_udp_payload_axis_tuser = rx_udp_payload_axis_tuser;
+wire [31:0] reg_0, reg_1, reg_2, reg_3;
+wire [31:0] hex_disp;
 
 nowy #(
-  .REGS_NUM    (4),  // liczba rejestrow
-  .REG_WIDTH   (32), // szerokosc rejestrow (w bitach)
+  .REGS_NUM    (REGS_NUM),  // liczba rejestrow
+  .REG_WIDTH   (REG_WIDTH), // szerokosc rejestrow (w bitach)
   .IP_ADRESS   (LOCAL_IP),  // adres IP komputera
   .PORT_NUMBER (PORT_NBR)   // numer portu
 ) i_nowy (
   .i_clk                        (clk),
   .i_rst                        (sw[4]),
   .i_rx_udp_payload_axis_tdata  (rx_udp_payload_axis_tdata),
-  .i_rx_udp_payload_axis_tvalid (rx_udp_payload_axis_tvalid && match_cond_reg),
+  .i_rx_udp_payload_axis_tvalid (rx_udp_payload_axis_tvalid),
   .i_rx_udp_payload_axis_tlast  (rx_udp_payload_axis_tlast),
-  .o_rx_udp_payload_axis_tready ((rx_fifo_udp_payload_axis_tready && match_cond_reg) || no_match_reg),
+  .o_rx_udp_payload_axis_tready (rx_udp_payload_axis_tready),
   .o_tx_udp_payload_axis_tdata  (tx_udp_payload_axis_tdata),
   .o_tx_udp_payload_axis_tvalid (tx_udp_payload_axis_tvalid),
   .o_tx_udp_payload_axis_tlast  (tx_udp_payload_axis_tlast),
   .i_tx_udp_payload_axis_tready (tx_udp_payload_axis_tready),
+  .i_port_nbr                   (PORT_NBR),
+  .i_ip_adr                     (rx_udp_ip_source_ip), // LOCAL_IP
   .o_reg_0                      (reg_0),
   .o_reg_1                      (reg_1),
   .o_reg_2                      (reg_2),
   .o_reg_3                      (reg_3)
 );
+
 
 // Place first payload byte onto LEDs
 reg valid_last = 0;
@@ -675,45 +685,45 @@ udp_complete_inst (
     .clear_arp_cache(0)
 );
 
-axis_fifo #(
-    .DEPTH(8192),
-    .DATA_WIDTH(8),
-    .KEEP_ENABLE(0),
-    .ID_ENABLE(0),
-    .DEST_ENABLE(0),
-    .USER_ENABLE(1),
-    .USER_WIDTH(1),
-    .FRAME_FIFO(0)
-)
-udp_payload_fifo (
-    .clk(clk),
-    .rst(rst),
+// axis_fifo #(
+//     .DEPTH(8192),
+//     .DATA_WIDTH(8),
+//     .KEEP_ENABLE(0),
+//     .ID_ENABLE(0),
+//     .DEST_ENABLE(0),
+//     .USER_ENABLE(1),
+//     .USER_WIDTH(1),
+//     .FRAME_FIFO(0)
+// )
+// udp_payload_fifo (
+//     .clk(clk),
+//     .rst(rst),
 
-    // AXI input
-    .s_axis_tdata(rx_fifo_udp_payload_axis_tdata),
-    .s_axis_tkeep(0),
-    .s_axis_tvalid(rx_fifo_udp_payload_axis_tvalid),
-    .s_axis_tready(rx_fifo_udp_payload_axis_tready),
-    .s_axis_tlast(rx_fifo_udp_payload_axis_tlast),
-    .s_axis_tid(0),
-    .s_axis_tdest(0),
-    .s_axis_tuser(rx_fifo_udp_payload_axis_tuser),
+//     // AXI input
+//     .s_axis_tdata(rx_fifo_udp_payload_axis_tdata),
+//     .s_axis_tkeep(0),
+//     .s_axis_tvalid(rx_fifo_udp_payload_axis_tvalid),
+//     .s_axis_tready(rx_fifo_udp_payload_axis_tready),
+//     .s_axis_tlast(rx_fifo_udp_payload_axis_tlast),
+//     .s_axis_tid(0),
+//     .s_axis_tdest(0),
+//     .s_axis_tuser(rx_fifo_udp_payload_axis_tuser),
 
-    // AXI output
-    .m_axis_tdata(tx_fifo_udp_payload_axis_tdata),
-    .m_axis_tkeep(),
-    .m_axis_tvalid(tx_fifo_udp_payload_axis_tvalid),
-    .m_axis_tready(tx_fifo_udp_payload_axis_tready),
-    .m_axis_tlast(tx_fifo_udp_payload_axis_tlast),
-    .m_axis_tid(),
-    .m_axis_tdest(),
-    .m_axis_tuser(tx_fifo_udp_payload_axis_tuser),
+//     // AXI output
+//     .m_axis_tdata(tx_fifo_udp_payload_axis_tdata),
+//     .m_axis_tkeep(),
+//     .m_axis_tvalid(tx_fifo_udp_payload_axis_tvalid),
+//     .m_axis_tready(tx_fifo_udp_payload_axis_tready),
+//     .m_axis_tlast(tx_fifo_udp_payload_axis_tlast),
+//     .m_axis_tid(),
+//     .m_axis_tdest(),
+//     .m_axis_tuser(tx_fifo_udp_payload_axis_tuser),
 
-    // Status
-    .status_overflow(),
-    .status_bad_frame(),
-    .status_good_frame()
-);
+//     // Status
+//     .status_overflow(),
+//     .status_bad_frame(),
+//     .status_good_frame()
+// );
 
 endmodule
 

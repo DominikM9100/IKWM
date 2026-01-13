@@ -1,7 +1,7 @@
 `resetall
 `timescale 1ns / 1ps
 
-module nowy #(
+module registers_control #(
   parameter        REGS_NUM    = 4,
   parameter        REG_WIDTH   = 32,
   parameter [31:0] IP_ADRESS   = {8'd192, 8'd168, 8'd1, 8'd128},
@@ -73,16 +73,6 @@ reg       r_tx_valid;
 wire en;
 assign en = (i_ip_adr == IP_ADRESS && i_port_nbr == PORT_NUMBER);
 
-// ========== INICJALIZACJA REJESTRÓW ==========
-integer i;
-always @(posedge i_clk) begin
-  if (i_rst) begin
-    for (i = 0; i < REGS_NUM; i = i + 1) begin
-      registers[i] <= 0;
-    end
-  end
-end
-
 // ========== FSM - REJESTRY ==========
 always @(posedge i_clk) begin
   if (i_rst) begin
@@ -94,9 +84,6 @@ always @(posedge i_clk) begin
     r_send_byte_cnt  <= 0;
     r_send_active    <= 0;
     r_write_en       <= 0;
-    r_tx_data        <= 0;
-    r_tx_last        <= 0;
-    r_tx_valid       <= 0;
   end else if (en) begin
     r_state          <= next_state;
     r_reg_number     <= next_reg_number;
@@ -219,9 +206,15 @@ always @(*) begin
   end
 end
 
+integer i;
 // ========== ZAPIS DO REJESTRU ==========
-always @(posedge i_clk) begin
-  if (en) begin
+always @(posedge i_clk or posedge i_rst) begin
+  if (i_rst) begin
+    for (i = 0; i < REGS_NUM; i = i + 1) begin
+      registers[i] <= 0;
+    end
+  end
+  else if (en) begin
     // Wykonaj zapis jeśli flaga zapisu jest ustawiona
     if (r_write_en) begin
       registers[r_reg_number] <= r_write_data;
